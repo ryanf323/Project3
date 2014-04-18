@@ -104,7 +104,7 @@ DWORD WINAPI receive_cmds(LPVOID lpParam)
         if (res != 0)
         {
             /* Start putting your stuff here */
-        if ( strncmp( rcvbuf, "quit",4 )==0)
+            if ( strncmp( rcvbuf, "quit",4 )==0)
             {
                 send(current_client,"quit",4,0);
                 cout <<"Client disconnected" << endl;
@@ -121,12 +121,9 @@ DWORD WINAPI receive_cmds(LPVOID lpParam)
                 //save to file
 
                 /**Request Mutex Lock**/
-                DWORD dwCount=0, dwWaitResult;
+                DWORD dwWaitResult;
 
                 // Request ownership of mutex.
-
-                while( dwCount < 20 )
-                {
                     //Wait until the specified object is in the
                     //signaled state or the time-out interval elapses.
                     //see: http://msdn.microsoft.com/en-us/library/ms687032%28v=vs.85%29.aspx
@@ -139,7 +136,6 @@ DWORD WINAPI receive_cmds(LPVOID lpParam)
                         // The thread got ownership of the mutex
                         case WAIT_OBJECT_0:
                         {
-                            dwCount++;
 
                 /********************/
 
@@ -173,21 +169,16 @@ DWORD WINAPI receive_cmds(LPVOID lpParam)
                     send(clientSockets.at(i),stringToCharArray(message), message.length(), 0);
                 }
 
-            }
+            }//end of else clause
 
-
-            /* Stop putting your stuff here */
-     }
-
-     // clear buffers
+            // clear buffers
 
             memset(&rcvbuf[0], '\0', sizeof(rcvbuf));
             memset(&sendData[0], '\0', sizeof(sendData));
-   }//end of while loop
 
+    }//end of while loop
     }
-}
-
+}// end of function
 
 int main()
 {
@@ -292,12 +283,10 @@ int main()
             &clientThreadID); // receive thread identifier
 
         /**Request Mutex Lock**/
-            DWORD dwCount=0, dwWaitResult;
+            DWORD dwWaitResult;
 
             // Request ownership of mutex.
 
-            while( dwCount < 20 )
-            {
                 //Wait until the specified object is in the
                 //signaled state or the time-out interval elapses.
                 //see: http://msdn.microsoft.com/en-us/library/ms687032%28v=vs.85%29.aspx
@@ -310,7 +299,6 @@ int main()
                     // The thread got ownership of the mutex
                     case WAIT_OBJECT_0:
                         {
-                        dwCount++;
 
                         /********************/
                         //Remove Socket from vector
@@ -332,8 +320,6 @@ int main()
 
             }//end of switch case
 
-        }//end of
-
    }//end of infinite while loop
 
 
@@ -342,4 +328,5 @@ int main()
     WSACleanup();
 
  return 0;
+
 }//end of main
