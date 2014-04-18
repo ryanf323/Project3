@@ -1,0 +1,25 @@
+# depslib dependency file v1.0
+1303836300 source:c:\rit\2011-2012\20113\4050-212\labs-dank\pe_week8_mt_server\mtserverstarterkit\mt_server\server.cpp
+	<windows.h>
+	<stdlib.h>
+	<stdio.h>
+	<iostream>
+	<winsock.h>
+
+1397238041 source:c:\users\ryan flynn\dropbox\c++2\week10\mt_server\server.cpp
+	<windows.h>
+	<stdlib.h>
+	<stdio.h>
+	<iostream>
+	<winsock.h>
+
+1397862713 source:c:\users\ryan flynn\dropbox\c++2\week11\project 3\server.cpp
+	<windows.h>
+	<stdlib.h>
+	<stdio.h>
+	<iostream>
+	<winsock.h>
+	<fstream>
+	<vector>
+	<algorithm>
+
