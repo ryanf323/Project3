@@ -15,7 +15,7 @@ HANDLE fileMutex;
 
 //Global Variables
 int usercount = 0;
-vector <SOCKET> clientSockets;
+vector <SOCKET *> clientSockets;
 
 struct threadParams{
 
@@ -65,14 +65,17 @@ DWORD WINAPI receive_cmds(LPVOID lpParam)
 
     // buffer to hold our received data
     char rcvbuf[256];
+    memset(&rcvbuf[0], '\0', sizeof(rcvbuf));
+
     // buffer to hold our sent data
     char sendData[256];
+    memset(&sendData[0], '\0', sizeof(sendData));
     // for error checking
     int res;
 
     //Ask for user name
     strcpy(sendData,"Your name, please\n");
-    cout << "Sent:\t Your name please" << endl;
+    cout << "Sent:\t Your name, please" << endl;
     send(current_client,sendData,strlen(sendData),0);
     memset(&sendData[0], '\0', sizeof(sendData));
 
@@ -149,25 +152,32 @@ DWORD WINAPI receive_cmds(LPVOID lpParam)
                         fout << message <<"\n";
                         fout.close();
 
+                        /*forward message to clients --DOES NOT EXECUTE!--
+                        for (int i = 0 ; i < clientSockets.size();i++)
+                        {
+                            cout << "Attemping to forward message..." << endl;
+                            int result;
+                            result = send(*clientSockets.at(i),stringToCharArray(message), message.length(), 0);
+                            if (result == SOCKET_ERROR)
+                            {
+                                cout << "Error Forwarding Message: " << WSAGetLastError() <<endl;
+                            }
+                        }*/
+
+
                 /**Release Mutex Lock**/
                         ReleaseMutex(fileMutex);
 
-                        break;
+                        //break;
 
                             // The thread got ownership of an abandoned mutex
                             // This is not good.
                         }
                         case WAIT_ABANDONED:
-                            return FALSE;
+                            //return FALSE;
+                            Sleep(1);
                     }
                 /********************/
-
-                //forward message to clients
-
-                for (int i = 0 ; i < clientSockets.size();i++)
-                {
-                    send(clientSockets.at(i),stringToCharArray(message), message.length(), 0);
-                }
 
             }//end of else clause
 
@@ -263,11 +273,12 @@ int main()
         // accept connections
         StructObject.client_socket = accept(sock,(struct sockaddr*)&from,&fromlen);
         /**is a mutex needed here?**/
-        clientSockets.push_back(StructObject.client_socket);
+        clientSockets.push_back(&StructObject.client_socket);
 
         cout << "Client connected" << endl;
         usercount += 1;
         cout <<"Number of clients: " << usercount << endl;
+        cout << "Size of Sockets Vector: " << clientSockets.size() << endl;
 
         // create thread to run receive_cmds here
         //and send the client socket as a parameter
@@ -304,7 +315,7 @@ int main()
                         //Remove Socket from vector
                         for (int i = 0; i < clientSockets.size(); i++)
                         {
-                            if(clientSockets[i]==StructObject.client_socket)
+                            if(*clientSockets[i]==StructObject.client_socket)
                             {
                                 clientSockets.erase(clientSockets.begin()+i);
                             }
