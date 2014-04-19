@@ -6,6 +6,7 @@
 #include <fstream>
 #include <vector>
 #include <algorithm>
+#include "global.h"
 
 using namespace std;
 
@@ -24,44 +25,19 @@ struct threadParams{
 
 }StructObject;
 
-/********************
-* Name: stringToCharArray
-* Purpose: Converts a string in a character array to send
-via the socket.
-* Arguments: String to be converted
-* Returns: New Cstring.
-********************/
-char* stringToCharArray(string oldStr){
 
-    char *newCStr = new char[oldStr.size()+1];
-    strcpy(newCStr, oldStr.c_str());
 
-    return newCStr;
-}
-
-/********************
-* Name: charArrayToString
-* Purpose: Converts a character array to
-* a string object
-* Arguments: C-String to be converted
-* Returns: New string.
-********************/
-string charArrayToString(char* oldStr){
-
-    string temp(oldStr);
-
-    return temp;
-}
 
 // our thread for receiving commands
 DWORD WINAPI receive_cmds(LPVOID lpParam)
 {
     string userName;
-    cout <<"thread created" << endl;
 
     threadParams *params = (threadParams *) lpParam;
     // set our socket to the socket passed in as a parameter
     SOCKET current_client = params -> client_socket;
+
+   cout <<"New thread created..." << endl;
 
     // buffer to hold our received data
     char rcvbuf[256];
@@ -152,17 +128,17 @@ DWORD WINAPI receive_cmds(LPVOID lpParam)
                         fout << message <<"\n";
                         fout.close();
 
-                        /*forward message to clients --DOES NOT EXECUTE!--
+                        //forward message to clients --DOES NOT EXECUTE!--
                         for (int i = 0 ; i < clientSockets.size();i++)
                         {
                             cout << "Attemping to forward message..." << endl;
                             int result;
-                            result = send(*clientSockets.at(i),stringToCharArray(message), message.length(), 0);
+                        result = send(*clientSockets.at(i),stringToCharArray(message), message.length(), 0);
                             if (result == SOCKET_ERROR)
                             {
                                 cout << "Error Forwarding Message: " << WSAGetLastError() <<endl;
                             }
-                        }*/
+                        }
 
 
                 /**Release Mutex Lock**/
@@ -274,11 +250,13 @@ int main()
         StructObject.client_socket = accept(sock,(struct sockaddr*)&from,&fromlen);
         /**is a mutex needed here?**/
         clientSockets.push_back(&StructObject.client_socket);
+        cout << "Added " << *clientSockets.at(clientSockets.size()-1) << endl;
+        cout << "Size of Sockets Vector: " << clientSockets.size() << endl;
 
         cout << "Client connected" << endl;
         usercount += 1;
         cout <<"Number of clients: " << usercount << endl;
-        cout << "Size of Sockets Vector: " << clientSockets.size() << endl;
+
 
         // create thread to run receive_cmds here
         //and send the client socket as a parameter
@@ -315,7 +293,7 @@ int main()
                         //Remove Socket from vector
                         for (int i = 0; i < clientSockets.size(); i++)
                         {
-                            if(*clientSockets[i]==StructObject.client_socket)
+                            if(*clientSockets.at(i)==StructObject.client_socket)
                             {
                                 clientSockets.erase(clientSockets.begin()+i);
                             }

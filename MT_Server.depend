@@ -23,7 +23,7 @@
 	<vector>
 	<algorithm>
 
-1397919405 source:c:\users\ryan flynn\documents\github\project 3\project3\server.cpp
+1397953149 source:c:\users\ryan flynn\documents\github\project 3\project3\server.cpp
 	<windows.h>
 	<stdlib.h>
 	<stdio.h>
@@ -32,4 +32,10 @@
 	<fstream>
 	<vector>
 	<algorithm>
+	"global.h"
+
+1397953323 c:\users\ryan flynn\documents\github\project 3\project3\global.h
+	<string>
+	<cstdlib>
+	<vector>
 
